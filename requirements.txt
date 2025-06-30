@@ -3,5 +3,4 @@ pandas
 requests
 matplotlib
 plotly
-re
 datetime
