@@ -9,6 +9,7 @@ import plotly.graph_objects as go
 import datetime
 
 
+
 # Fetching Application table and converting to csv
 ## API Key:
 
@@ -276,9 +277,7 @@ def clean_and_classify(location):
 df_jobs[['clean_location', 'global_region']] = df_jobs['office_name'].apply(clean_and_classify)
 
 
-import requests
-import pandas as pd
-from requests.auth import HTTPBasicAuth
+
 
 API_KEY = st.secrets["API_KEY"]
 base_url = "https://harvest.greenhouse.io/v1/offers"
@@ -445,14 +444,34 @@ st.title("Recruitment Dashboard")
 
 st.header("📊 Application Stages Overview ")
 
+
+# Desired order of stages
+stage_order = [
+    "Application Review", 
+    "Recruiter Screen", 
+    "Hiring Manager Screen", 
+    "Face to Face", 
+    "Offer"
+]
+
+# Reorder value counts
 stage_counts = df_application_active['current_stage_name'].value_counts()
+stage_counts = stage_counts.reindex(stage_order, fill_value=0)
+
 labels = stage_counts.index.tolist()
 sizes = stage_counts.values.tolist()
+total_candidates = sum(sizes)
 
-# --- Custom Colors (edit if needed) ---
-colors = plt.cm.Set3.colors[:len(labels)]  # Pick a color set
+# Airia color palette
+colors = [
+    "#006ef5",  # Application Review
+    "#6262f4",  # Recruiter Screen
+    "#00c8f5",  # Hiring Manager Screen
+    "#47549d",  # Face to Face
+    "#555555",  # Offer
+]
 
-# --- Plot ---
+# Plot
 fig, ax = plt.subplots(figsize=(8, 6))
 wedges, texts, autotexts = ax.pie(
     sizes,
@@ -461,33 +480,28 @@ wedges, texts, autotexts = ax.pie(
     autopct='%1.1f%%',
     startangle=90,
     wedgeprops={'width': 0.4, 'edgecolor': 'white'},
-    pctdistance=0.85  # Puts % just outside the ring
+    pctdistance=0.85
 )
 
+# Improve text styling
+plt.setp(texts, size=12, weight="bold")
+plt.setp(autotexts, size=12, weight="bold", color="white")
 
-
-
-
-# --- Style tweaks ---
-for text in texts:
-    text.set_fontsize(12)
-    text.set_fontweight('bold')
-
-for autotext in autotexts:
-    autotext.set_fontsize(12)
-    autotext.set_fontweight('bold')
-
-# Make it a circle and remove axis
-ax.axis('equal')
-plt.tight_layout()
-total_candidates = sum(sizes)
+# Center text
 ax.text(
     0, 0, f"{total_candidates}\nCandidates",
     ha='center', va='center',
-    fontsize=16, fontweight='bold'
+    fontsize=16, fontweight='bold', color="#333333"
 )
 
+ax.set_title("Application Stage Distribution", fontsize=16, weight="bold")
+ax.axis('equal')
+plt.tight_layout()
+plt.show()
+
 st.pyplot(fig)
+
+
 # --- Section Header ---
 st.header("🌍 Open Jobs by Region")
 
@@ -506,7 +520,7 @@ region_values = region_counts.values.tolist()
 
 # --- Plot Region-wise Job Count ---
 fig2, ax2 = plt.subplots(figsize=(8, 6))
-bars = ax2.bar(region_labels, region_values, color=plt.cm.Pastel1.colors[:len(region_labels)])
+bars = ax2.bar(region_labels, region_values, color=colors)
 
 # Style
 ax2.set_ylabel("Number of Open Jobs")
@@ -522,6 +536,8 @@ for bar in bars:
 
 # --- Show in Streamlit ---
 st.pyplot(fig2)
+
+
 
 
 # -------Hires-------
@@ -669,7 +685,7 @@ fig_funnel = go.Figure(go.Funnel(
     text=funnel_df['Label'],
     textposition="inside",
     hoverinfo="text",  # 
-    marker_color='royalblue',
+    marker_color='#6262f4',
     opacity=0.85,
     textfont=dict(color='white', size=14)
 ))
