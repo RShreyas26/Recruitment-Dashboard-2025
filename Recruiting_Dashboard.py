@@ -142,7 +142,7 @@ country_to_region = {
     "China": "APAC",
     "Australia": "APAC",
     "Bangalore":"APAC",
-    "ANZ": "APAC"
+    "ANZ": "APAC",
 }
 
 def normalize(part):
