@@ -223,7 +223,7 @@ country_aliases = {
     "Uk": "United Kingdom",
     "Latam": "Latin America",
     "ANZ":"Australia and New Zealand",
-    "Anz":"Australia and New Zealand"
+    "Anz":"Australia and New Zealand",
 }
 
 # Country → Global region
@@ -253,7 +253,7 @@ country_to_region = {
     "Australia": "APAC",
     "Australia and New Zealand": "APAC",
     "Bangalore":"APAC",
-    "ANZ":"APAC"
+    "ANZ":"APAC",
 }
 
 def normalize(part):
@@ -375,7 +375,8 @@ df_offer_jobs["Region"] = df_offer_jobs["offices"].apply(
 
 df_offer_jobs = df_offer_jobs.drop(columns=['offices','departments'])
 
-df_offer_jobs['Region'] = df_offer_jobs['Region'].replace({'Atlanta':'North America','Bulgaria':'EMEA','India':'APAC','UK':'EMEA','UAE':'EMEA','US':'North America'})
+#ADD region information here
+df_offer_jobs['Region'] = df_offer_jobs['Region'].replace({'Atlanta':'North America','Bulgaria':'EMEA','India':'APAC','UK':'EMEA','UAE':'EMEA','US':'North America','ANZ':'APAC'})
 
 
 # Average time to hire
